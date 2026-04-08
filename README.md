@@ -1,70 +1,86 @@
-# 📄 HWP to PDF 일괄 변환기 (HWP to PDF Converter)
+# HWP-to-PDF-Batch-Converter
 
-파이썬과 `win32com`을 활용하여 한컴오피스 HWP 및 HWPX 문서를 쉽게 PDF로 일괄 변환해 주는 윈도우 데스크탑 애플리케이션입니다.
-편리한 **드래그 앤 드롭** 기능과 수십·수백 개의 파일을 변환할 때도 멈춤 없는 **쾌적한 백그라운드 처리**를 지원합니다.
+[![Build EXE](https://github.com/obmaz/hwp2pdf/actions/workflows/build.yml/badge.svg)](https://github.com/obmaz/hwp2pdf/actions/workflows/build.yml)
+![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
+![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
----
-
-## ✨ 주요 기능 (Key Features)
-
-- **폴더 및 파일 드래그 앤 드롭 지원**: UI 내에 여러 개의 파일이나 폴더를 드래그 앤 드롭하여 리스트에 손쉽게 추가할 수 있습니다.
-- **원본 폴더 구조 완벽 유지**: 폴더를 드롭할 경우, 하위 폴더에 있는 파일까지 샅샅이 찾아내며, PDF로 저장할 때 해당 상대 폴더 구조를 생성하여 그대로 저장합니다.
-- **다중 스레딩(Multi-Threading) 최적화**: 변환 작업이 백그라운드 스레드에서 진행되어, 수백 개의 파일을 변환하는 도중에도 화면이 멈추지(프리징) 않고 아주 부드럽게 작동합니다.
-- **실시간 상태 확인 및 중단 기능**: 직관적인 표(Data Grid) 리스트를 통해 파일별 변환 상태(대기, ⏳ 변환 중..., ✅ 성공, ❌ 실패, ⚠️ 중지됨)를 실시간으로 추적 가능하며, 원할 땐 언제든 변환을 중단할 수 있습니다.
-- **사용자 편의 및 보안 팝업 완벽 우회**: 
-  - 한글 프로그램 백그라운드 은닉 실행 (`Visible = False`)
-  - 접근 권한 승인 팝업 우회 (`RegisterModule` 적용)
-  - 폰트 누락 등 알림 팝업으로 인한 멈춤 현상(프리징) 완벽 방지 (`SetMessageBoxMode(0x20)` 적용)
+본 프로젝트는 한컴오피스 HWP 및 HWPX 문서를 고속으로 PDF로 일괄 변환하는 Windows 전용 데스크탑 애플리케이션입니다. Python의 `win32com` 라이브러리를 통해 한컴오피스 Automation API를 제어하며, 비동기 멀티스레딩 아키텍처를 채택하여 대량의 문서 처리 시에도 안정적인 성능과 UI 응답성을 제공합니다.
 
 ---
 
-## 🛠 요구 사항 (Prerequisites)
+## 🛠 핵심 기술 스택 및 아키텍처 (Technical Stack)
 
-이 프로그램은 PC에 설치된 한글 프로그램의 애플리케이션 자동화 서버 객체(`HWPFrame.HwpObject`)에 의존합니다. 따라서 다음 환경이 필수적으로 요구됩니다.
-
-- **운영체제**: Windows 10 / 11 환경
-- **소프트웨어**: [한컴오피스 한글](https://www.hancom.com/) 설치 필수
-- **파이썬**: Python 3.8 이상 (직접 파이썬 코드를 실행하는 경우)
+- **Language**: Python 3.8+
+- **GUI Framework**: Tkinter / CustomTkinter (현대적인 UI 컴포넌트)
+- **Runtime Automation**: `pywin32` (Microsoft COM/OLE Automation)
+- **Handling UI Events**: `tkinterdnd2` (Native Windows Drag & Drop Integration)
+- **Concurrency**: `threading` 모듈을 이용한 Worker/UI 스레드 분리
+- **Build System**: PyInstaller & GitHub Actions (CI/CD 자동 빌드 지원)
 
 ---
 
-## 🚀 설치 및 사용법 (Installation & Run)
+## 🚀 주요 기능 (Key Features)
 
-### 1단계: 패키지 의존성 설치
-터미널을 열고 아래 명령어를 입력하여 필요한 파이썬 패키지를 설치합니다.
-(UI 드래그 앤 드롭 구현을 위해 `tkinterdnd2` 등을 사용합니다.)
+### 1. 지능형 파일 패키징 및 폴더 구조 유지
+- **Recursive Scan**: 입력된 폴더 내의 모든 하위 디렉토리를 재귀적으로 탐색하여 HWP/HWPX 파일을 추출합니다.
+- **Path Mapping**: 원본 디렉토리 구조를 분석하여 출력 경로에 동일한 계층 구조를 자동 생성하므로 결과물 관리가 용이합니다.
+
+### 2. 고성능 백그라운드 프로세싱 및 최적화
+- **Multi-Threading**: 변환 로직을 별도의 워커 스레드에서 실행하여 대량 변환 중에도 GUI 프리징 현상을 완벽히 차단합니다.
+- **Automation Stability**: 
+  - `Visible = False`: 한글 프로세스를 백그라운드 은닉 모드로 실행하여 리소스 소모를 최소화합니다.
+  - `SetMessageBoxMode(0x20)`: 폰트 누락, 손상된 문서 등 작업 중 발생하는 모든 차단형 팝업(Blockage)을 무시하도록 설정하여 자동화 무결성을 보장합니다.
+
+### 3. 직관적인 사용자 인터페이스
+- **DND Support**: 시스템 탐색기로부터 파일 및 폴더의 드래그 앤 드롭을 지원합니다.
+- **Real-time Status Tracking**: 각 개별 파일의 변환 상태(Pending, Processing, Success, Failure)를 데이터 그리드에 실시간으로 업데이트합니다.
+
+---
+
+## 📋 시스템 요구 사항 (System Requirements)
+
+- **OS**: Windows 10 / 11
+- **Software**: **한컴오피스 한글** 설치 필수 (Automation API 서버 제공 필요)
+- **Runtime**: Python 3.8 이상 (소스 실행 시)
+
+---
+
+## 🔧 설치 및 실행 가이드 (Setup & Execution)
+
+### 의존성 설치
+환경에 필요한 라이브러리를 설치합니다.
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2단계: 애플리케이션 실행
-설치가 끝난 뒤, 메인 파이썬 스크립트를 실행합니다.
+### 애플리케이션 실행
 ```bash
 python src/main.py
 ```
-앱이 켜지면 원하는 HWP/HWPX 문서나 폴더를 드래그 앤 드롭한 뒤, 화면 하단의 **"PDF로 일괄 변환 시작"** 버튼을 누르시면 됩니다.
 
 ---
 
-## 📦 실행 파일 만들기 (Build to EXE)
+## 📦 빌드 및 배포 (Build & Deployment)
 
-PC에 파이썬이 설치되지 않은 환경에서도 누구나 더블 클릭만으로 쉽게 사용할 수 있도록, 단일 `.exe` 실행 파일로 패키징할 수 있습니다. 
-
-터미널에서 아래 명령어를 실행하세요:
+### 로컬 빌드
+PyInstaller를 사용하여 단일 실행 파일(`.exe`)을 생성할 수 있습니다.
 ```bash
-python -m PyInstaller --noconsole --onefile --windowed --collect-all tkinterdnd2 --name "HWP_to_PDF_변환기" src/main.py
+python -m PyInstaller HWP_to_PDF.spec
 ```
+또는 `build_exe.bat` 파일을 실행하여 간편하게 빌드 프로세스를 완료할 수 있습니다.
 
-또는 프로젝트 내 제공된 **`build_exe.bat`** 파일을 더블 클릭하여 실행하셔도 무방합니다.
-빌드 완료 후 `dist` 폴더 안에 생성된 `HWP_to_PDF_변환기.exe` 파일을 언제든 실행하실 수 있습니다.
+### CI/CD (GitHub Actions)
+본 저장소에 `push` 시 GitHub Actions를 통해 Windows 환경에서 실행 파일이 자동으로 빌드됩니다. 빌드된 결과물은 각 Actions 실행의 **Artifacts** 탭에서 다운로드 가능합니다.
 
 ---
 
-## 💡 Troubleshooting (자주 묻는 질문/문제 해결)
+## 📎 Troubleshooting
 
-- **Q: 실행 시 "한컴오피스가 설치되어 있지 않거나 실행할 수 없습니다." 오류가 발생합니다.**
-  A: 실제 윈도우 환경에 한컴오피스 프로그램이 깔려 있는지 확인해 주세요. 백그라운드 프로세스로 한글이 실행된 상태여야 문서 열람 및 변환이 가능합니다.
-- **Q: 변환 실패가 뜨고 "저장된 파일을 찾을 수 없습니다." 문구가 나옵니다.**
-  A: 가끔 내부 COM 오류나 파일 접근 권한 문제로 저장이 안 될 수 있습니다. 읽기 전용 문서이거나, 해당 문서 안에 삽입된 알 수 없는 특정 객체로 인해 저장이 차단되는 경우가 있습니다. 
-- **Q: 드래그 앤 드롭이 안 됩니다.**
-  A: 혹시 터미널이나 에디터(VSCode 등)가 "관리자 권한"으로 실행되었는지 확인해 주세요. 윈도우 보안 정책상 관리자 권한 앱과 일반 권한 앱 사이의 드래그 앤 드롭은 차단됩니다. 일반 권한으로 창을 열거나, 버튼을 눌러 파일을 추가해 주세요.
+- **COM 인터페이스 오류**: 한컴오피스가 정상적으로 설치되지 않았거나 레지스트리에 COM 서버가 등록되지 않은 경우 발생할 수 있습니다. 한글 프로그램을 1회 실행 후 시도해 보십시오.
+- **권한 문제**: 관리자 권한으로 실행 중인 앱과 일반 권한 앱 사이에는 Windows 보안 정책상 드래그 앤 드롭이 제한될 수 있습니다.
+- **변환 실패**: 암호가 걸려 있거나 파일이 크게 손상된 경우 매크로 실행이 중단될 수 있습니다.
+
+---
+
+## 📄 License
+[MIT License](LICENSE) (또는 해당 라이선스 명시)
