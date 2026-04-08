@@ -8,7 +8,7 @@
 
 ---
 
-## 🛠 핵심 기술 스택 및 아키텍처 (Technical Stack)
+## 핵심 기술 스택 및 아키텍처 (Technical Stack)
 
 - **Language**: Python 3.8+
 - **GUI Framework**: Tkinter / CustomTkinter (현대적인 UI 컴포넌트)
@@ -19,7 +19,7 @@
 
 ---
 
-## 🚀 주요 기능 (Key Features)
+## 주요 기능 (Key Features)
 
 ### 1. 지능형 파일 패키징 및 폴더 구조 유지
 - **Recursive Scan**: 입력된 폴더 내의 모든 하위 디렉토리를 재귀적으로 탐색하여 HWP/HWPX 파일을 추출합니다.
@@ -37,7 +37,7 @@
 
 ---
 
-## 📋 시스템 요구 사항 (System Requirements)
+## 시스템 요구 사항 (System Requirements)
 
 - **OS**: Windows 10 / 11
 - **Software**: **한컴오피스 한글** 설치 필수 (Automation API 서버 제공 필요)
@@ -45,7 +45,7 @@
 
 ---
 
-## 🔧 설치 및 실행 가이드 (Setup & Execution)
+## 설치 및 실행 가이드 (Setup & Execution)
 
 ### 의존성 설치
 환경에 필요한 라이브러리를 설치합니다.
@@ -60,7 +60,7 @@ python src/main.py
 
 ---
 
-## 📦 빌드 및 배포 (Build & Deployment)
+## 빌드 및 배포 (Build & Deployment)
 
 ### 로컬 빌드
 PyInstaller를 사용하여 단일 실행 파일(`.exe`)을 생성할 수 있습니다.
@@ -74,7 +74,7 @@ python -m PyInstaller HWP_to_PDF.spec
 
 ---
 
-## 📎 Troubleshooting
+## Troubleshooting
 
 - **COM 인터페이스 오류**: 한컴오피스가 정상적으로 설치되지 않았거나 레지스트리에 COM 서버가 등록되지 않은 경우 발생할 수 있습니다. 한글 프로그램을 1회 실행 후 시도해 보십시오.
 - **권한 문제**: 관리자 권한으로 실행 중인 앱과 일반 권한 앱 사이에는 Windows 보안 정책상 드래그 앤 드롭이 제한될 수 있습니다.
@@ -82,5 +82,5 @@ python -m PyInstaller HWP_to_PDF.spec
 
 ---
 
-## 📄 License
+## License
 [MIT License](LICENSE) (또는 해당 라이선스 명시)
